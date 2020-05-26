@@ -51,7 +51,8 @@ class UserService(
     @KtorExperimentalAPI
     suspend fun authenticate(input: UserRequestDto): TokenDto {
         val user = repo.getByUsername(input.name) ?: throw NotFoundException()
-        if (!passwordEncoder.matches(input.password, user.password)) {
+        val encodePassword = passwordEncoder.encode(input.password)
+        if (!passwordEncoder.matches(encodePassword, user.password)) {
             throw InvalidPasswordException("Wrong password!")
         }
         val token = tokenService.generate(user)
