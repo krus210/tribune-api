@@ -5,12 +5,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ru.korolevss.model.PostModel
 import ru.korolevss.model.UserModel
+import ru.korolevss.posts
 import java.time.LocalDateTime
 
 class PostRepositoryMutex : PostRepository {
 
     private var nextId = atomic(25L)
-    private val items = mutableListOf<PostModel>()
+    private val items = posts
     private val mutex = Mutex()
 
     override suspend fun getById(postId: Long): PostModel? = items.find { it.id == postId }

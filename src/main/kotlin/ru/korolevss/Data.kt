@@ -5,7 +5,7 @@ import ru.korolevss.model.UserModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-val users = listOf(
+val users = mutableListOf(
         UserModel(1, "user1", "123456", mutableListOf(25,23,21,19,17), "user1", likes = 9, dislikes = 0),
         UserModel(2, "user2", "123456", mutableListOf(24,22,20,18,16), "user2", likes = 12, dislikes = 0),
         UserModel(3, "user3", "123456", mutableListOf(15,13,11,9,7), "user3", likes = 7, dislikes = 0),
@@ -78,7 +78,7 @@ val dates1 = listOf(
 
 )
 
-val posts = listOf(
+val posts = mutableListOf(
         PostModel(25, users[0], dates0[24], "Post 25 from user 1", "post25",
                 likeUsersId = mutableMapOf(2L to dates1[0], 3L to dates1[1], 4L to dates1[2], 5L to dates1[3], 6L to dates1[4], 7L to dates1[5], 8L to dates1[6], 9L to dates1[7]),
                 dislikeUsersId = mutableMapOf(10L to dates1[8], 11L to dates1[9])

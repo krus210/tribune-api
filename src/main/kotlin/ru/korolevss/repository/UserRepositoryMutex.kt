@@ -6,10 +6,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ru.korolevss.model.*
 import ru.korolevss.service.PostService
+import ru.korolevss.users
 
 class UserRepositoryMutex : UserRepository {
     private var nextId = atomic(11L)
-    private val items = mutableListOf<UserModel>()
+    private val items = users
     private val mutex = Mutex()
 
     override suspend fun getByIdPassword(id: Long, password: String): UserModel? {
