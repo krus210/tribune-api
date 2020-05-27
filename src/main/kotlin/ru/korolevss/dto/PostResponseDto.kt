@@ -39,7 +39,7 @@ data class PostResponseDto(
                     likedByUser = likedByUser,
                     dislikedByUser = dislikedByUser,
                     isPostOfUser = isPostOfUser,
-                    statusOfUser = user.status
+                    statusOfUser = post.user.status
             )
         }
     }
