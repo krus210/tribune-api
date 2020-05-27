@@ -112,13 +112,13 @@ class UserRepositoryMutex : UserRepository {
         val itemsCompareLikes = items.sortedWith(compareBy { it.likes }).reversed()
         val indexUserByDislikes = itemsCompareDislikes.indexOfFirst { it.id == user.id }
         val indexUserByLikes = itemsCompareLikes.indexOfFirst { it.id == user.id }
-        if (user.dislikes > 100 || user.dislikes > user.likes * 2 || ((indexUserByDislikes <= 4) && items.size >= 20)) {
+        if (user.dislikes > 5 || user.dislikes > user.likes * 2 || ((indexUserByDislikes <= 4) && items.size >= 20)) {
             if (user.status != UserStatus.HATER) {
                 mutex.withLock {
                     items[index].status = UserStatus.HATER
                 }
             }
-        } else if (user.likes > 100 || user.likes > user.dislikes * 2 || ((indexUserByLikes <= 4) && items.size >= 20)) {
+        } else if (user.likes > 5 || user.likes > user.dislikes * 2 || ((indexUserByLikes <= 4) && items.size >= 20)) {
             if (user.status != UserStatus.PROMOTER) {
                 mutex.withLock {
                     items[index].status = UserStatus.PROMOTER
