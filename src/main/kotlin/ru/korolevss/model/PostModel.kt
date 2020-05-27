@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 data class PostModel(
         val id: Long,
-        val user: UserModel,
+        val userId: Long,
         val date: LocalDateTime,
         val text: String,
         val attachmentImage: String,

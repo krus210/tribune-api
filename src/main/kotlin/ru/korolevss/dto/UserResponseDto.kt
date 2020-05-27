@@ -1,7 +1,9 @@
 package ru.korolevss.dto
 
-import ru.korolevss.model.UserModel
+import io.ktor.util.KtorExperimentalAPI
 import ru.korolevss.model.UserStatus
+import ru.korolevss.service.PostService
+import ru.korolevss.service.UserService
 
 
 data class UserResponseDto(
@@ -13,15 +15,18 @@ data class UserResponseDto(
         val readOnly: Boolean = false
 ) {
     companion object {
-        fun fromModel(user: UserModel) = UserResponseDto(
-                id = user.id,
-                name = user.name,
-                attachmentImage = user.attachmentImage,
-                status = user.status,
-                token = user.token,
-                readOnly = user.readOnly
-
-        )
+        @KtorExperimentalAPI
+        suspend fun fromModel(userId: Long, userService: UserService, postService: PostService): UserResponseDto {
+            val user = userService.getById(userId)
+            return UserResponseDto(
+                    id = user.id,
+                    name = user.name,
+                    attachmentImage = user.attachmentImage,
+                    status = userService.checkStatus(user.id),
+                    token = user.token,
+                    readOnly = userService.checkReadOnly(userId, postService)
+            )
+        }
     }
 }
 

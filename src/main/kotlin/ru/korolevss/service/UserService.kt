@@ -11,6 +11,7 @@ import ru.korolevss.exception.UserExistsException
 import ru.korolevss.model.LikeDislikeModel
 import ru.korolevss.model.PostModel
 import ru.korolevss.model.UserModel
+import ru.korolevss.model.UserStatus
 import ru.korolevss.repository.PostRepository
 import ru.korolevss.repository.UserRepository
 
@@ -70,7 +71,8 @@ class UserService(
     }
 
     @KtorExperimentalAPI
-    suspend fun saveFirebaseToken(id: Long, firebaseToken: String) = repo.saveFirebaseToken(id, firebaseToken) ?: throw NotFoundException()
+    suspend fun saveFirebaseToken(id: Long, firebaseToken: String) = repo.saveFirebaseToken(id, firebaseToken)
+            ?: throw NotFoundException()
 
     @KtorExperimentalAPI
     suspend fun addLike(userId: Long) = repo.addLike(userId) ?: throw NotFoundException()
@@ -79,19 +81,16 @@ class UserService(
     suspend fun addDislike(userId: Long) = repo.addDislike(userId) ?: throw NotFoundException()
 
     @KtorExperimentalAPI
-    suspend fun checkReadOnly(userId: Long, postService: PostService) {
+    suspend fun checkReadOnly(userId: Long, postService: PostService): Boolean {
         val user = getById(userId)
-        repo.checkReadOnly(user, postService)
+        return repo.checkReadOnly(user, postService)
     }
 
     @KtorExperimentalAPI
-    suspend fun checkStatus(userId: Long) {
+    suspend fun checkStatus(userId: Long): UserStatus {
         val user = getById(userId)
-        repo.checkStatus(user)
+        return repo.checkStatus(user)
     }
-
-    @KtorExperimentalAPI
-    suspend fun checkStatusAllUsers() = repo.checkStatusAllUsers()
 
     @KtorExperimentalAPI
     suspend fun addPostId(userId: Long, postId: Long) {
@@ -99,10 +98,18 @@ class UserService(
         repo.addPostId(user, postId)
     }
 
-    suspend fun listUsersLikeDislikePostById(post: PostModel): Map<UserResponseDto, LikeDislikeDto> {
-        val mapUsers= mutableMapOf<UserResponseDto, LikeDislikeDto>()
+    @KtorExperimentalAPI
+    suspend fun removePostId(userId: Long, postId: Long) {
+        val user = getById(userId)
+        repo.removePostId(user, postId)
+    }
+
+    @KtorExperimentalAPI
+    suspend fun listUsersLikeDislikePostById(postId: Long, postService: PostService): Map<UserResponseDto, LikeDislikeDto> {
+        val mapUsers = mutableMapOf<UserResponseDto, LikeDislikeDto>()
+        val post = postService.getPostById(postId)
         repo.listUsersLikeDislikePostById(post).forEach {
-            mapUsers[UserResponseDto.fromModel(it.key)] = LikeDislikeDto.fromModel(it.value)
+            mapUsers[UserResponseDto.fromModel(it.key.id, this, postService)] = LikeDislikeDto.fromModel(it.value)
         }
         return mapUsers
     }

@@ -85,17 +85,17 @@ class UserRepositoryMutex : UserRepository {
     }
 
     @KtorExperimentalAPI
-    override suspend fun checkReadOnly(user: UserModel, postService: PostService) {
+    override suspend fun checkReadOnly(user: UserModel, postService: PostService): Boolean {
         val index = items.indexOfFirst { it.id == user.id }
         user.userPostsId.forEach {
-            val postDto = postService.getById(it, user)
-            if (postDto.dislikes >= 5 && postDto.likes == 0) {         // > 100
-                if (items[index].readOnly) {
+            val postDto = postService.getPostById(it)
+            if (postDto.dislikeUsersId.size >= 5 && postDto.likeUsersId.isEmpty()) {         // > 100
+                if (!items[index].readOnly) {
                     mutex.withLock {
                         items[index].readOnly = true
                     }
                 }
-                return
+                return@forEach
             } else {
                 if (items[index].readOnly) {
                     mutex.withLock {
@@ -104,9 +104,10 @@ class UserRepositoryMutex : UserRepository {
                 }
             }
         }
+        return items[index].readOnly
     }
 
-    override suspend fun checkStatus(user: UserModel) {
+    override suspend fun checkStatus(user: UserModel): UserStatus {
         val index = items.indexOfFirst { it.id == user.id }
         val itemsCompareDislikes = items.sortedWith(compareBy { it.dislikes }).reversed()
         val itemsCompareLikes = items.sortedWith(compareBy { it.likes }).reversed()
@@ -131,16 +132,20 @@ class UserRepositoryMutex : UserRepository {
                 }
             }
         }
-    }
-
-    override suspend fun checkStatusAllUsers() {
-        items.forEach { checkStatus(it) }
+        return items[index].status
     }
 
     override suspend fun addPostId(user: UserModel, postId: Long) {
         val index = items.indexOfFirst { it.id == user.id }
         mutex.withLock {
             items[index].userPostsId.add(postId)
+        }
+    }
+
+    override suspend fun removePostId(user: UserModel, postId: Long) {
+        val index = items.indexOfFirst { it.id == user.id }
+        mutex.withLock {
+            items[index].userPostsId.remove(postId)
         }
     }
 

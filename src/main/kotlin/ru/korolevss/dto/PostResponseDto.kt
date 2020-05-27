@@ -1,8 +1,10 @@
 package ru.korolevss.dto
 
+import io.ktor.util.KtorExperimentalAPI
 import ru.korolevss.model.PostModel
 import ru.korolevss.model.UserModel
 import ru.korolevss.model.UserStatus
+import ru.korolevss.service.UserService
 import java.time.format.DateTimeFormatter
 
 data class PostResponseDto(
@@ -20,16 +22,20 @@ data class PostResponseDto(
         val statusOfUser: UserStatus
 ) {
     companion object {
-        fun fromModel(post: PostModel, user: UserModel): PostResponseDto {
+        @KtorExperimentalAPI
+        suspend fun fromModel(post: PostModel, userId: Long, userService: UserService): PostResponseDto {
+            val status = userService.checkStatus(post.userId)
+            val user = userService.getById(userId)
+            val postUser = userService.getById(post.userId)
             val formatter = DateTimeFormatter.ofPattern("dd.MM.YYYY")
             val date = post.date.format(formatter)
             val likedByUser = post.likeUsersId.contains(user.id)
             val dislikedByUser = post.dislikeUsersId.contains(user.id)
-            val isPostOfUser = post.user.id == user.id
+            val isPostOfUser = post.userId == user.id
 
             return PostResponseDto(
                     id = post.id,
-                    userName = post.user.name,
+                    userName = postUser.name,
                     date = date,
                     text = post.text,
                     attachmentImage = post.attachmentImage,
@@ -39,7 +45,7 @@ data class PostResponseDto(
                     likedByUser = likedByUser,
                     dislikedByUser = dislikedByUser,
                     isPostOfUser = isPostOfUser,
-                    statusOfUser = post.user.status
+                    statusOfUser = status
             )
         }
     }

@@ -78,9 +78,9 @@ class PostRepositoryMutex : PostRepository {
         return items[index]
     }
 
-    override suspend fun getUserPosts(user: UserModel): List<PostModel> =
+    override suspend fun getUserPosts(userId: Long): List<PostModel> =
             items
-                .filter {it.user.id == user.id}
+                .filter {it.userId == userId}
                 .sortedWith(compareBy { it.date }).reversed()
 
 }

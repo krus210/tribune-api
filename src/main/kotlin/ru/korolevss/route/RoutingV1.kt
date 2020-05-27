@@ -50,9 +50,7 @@ class RoutingV1(
                 authenticate("basic", "jwt") {
                     route("/me") {
                         get {
-                            userService.checkReadOnly(me!!.id, postService)
-                            userService.checkStatus(me!!.id)
-                            call.respond(UserResponseDto.fromModel(me!!))
+                            call.respond(UserResponseDto.fromModel(me!!.id, userService, postService))
                         }
                         post("/change-password"){
                             val input = call.receive<PasswordChangeRequestDto>()
@@ -68,8 +66,7 @@ class RoutingV1(
 
                     route("/posts"){
                         get("/recent") {
-                            userService.checkStatusAllUsers()
-                            val response = postService.getRecentPosts(me!!)
+                            val response = postService.getRecentPosts(me!!.id, userService)
                             call.respond(response)
                         }
                         get("/{id}/before") {
@@ -77,15 +74,12 @@ class RoutingV1(
                                     "id",
                                     "Long"
                             )
-                            userService.checkStatusAllUsers()
-                            val response = postService.getPostsBefore(me!!, postId)
+                            val response = postService.getPostsBefore(me!!.id, postId, userService)
                             call.respond(response)
                         }
                         post {
                             val input = call.receive<PostRequestDto>()
-                            userService.checkReadOnly(me!!.id, postService)
-                            val postDto = postService.save(me!!, input)
-                            userService.addPostId(me!!.id, postDto.id)
+                            postService.save(me!!.id, input, userService)
                             call.respond(HttpStatusCode.OK)
                         }
                         delete("/{id}") {
@@ -93,8 +87,7 @@ class RoutingV1(
                                     "id",
                                     "Long"
                             )
-                            userService.checkReadOnly(me!!.id, postService)
-                            postService.removeById(me!!, postId)
+                            postService.removeById(me!!.id, postId, userService)
                             call.respond(HttpStatusCode.OK)
                         }
                         post("/{id}/like"){
@@ -102,9 +95,7 @@ class RoutingV1(
                                     "id",
                                     "Long"
                             )
-                            userService.checkStatus(me!!.id)
-                            val response = postService.likeById(me!!, postId, fcmService)
-                            userService.addLike(me!!.id)
+                            val response = postService.likeById(me!!.id, postId, userService, fcmService)
                             call.respond(response)
                         }
                         post("/{id}/dislike"){
@@ -112,20 +103,17 @@ class RoutingV1(
                                     "id",
                                     "Long"
                             )
-                            val response = postService.dislikeById(me!!, postId, fcmService)
-                            userService.addDislike(me!!.id)
+                            val response = postService.dislikeById(me!!.id, postId, userService, fcmService)
                             call.respond(response)
                         }
                         get("/me") {
-                            userService.checkStatus(me!!.id)
-                            val response = postService.getUserPosts(me!!)
+                            val response = postService.getUserPosts(me!!.id, userService)
                             call.respond(response)
                         }
                         get("/username/{username}") {
                             val username = call.parameters["username"]
                             val user = userService.getByUserName(username!!)
-                            userService.checkStatus(user!!.id)
-                            val response = postService.getUserPosts(user)
+                            val response = postService.getUserPosts(user!!.id, userService)
                             call.respond(response)
                         }
                         get("/{id}/list-like-dislike-users"){
@@ -133,8 +121,7 @@ class RoutingV1(
                                     "id",
                                     "Long"
                             )
-                            val post = postService.getPostById(postId)
-                            val response = userService.listUsersLikeDislikePostById(post)
+                            val response = userService.listUsersLikeDislikePostById(postId, postService)
                             call.respond(response)
 
                         }
