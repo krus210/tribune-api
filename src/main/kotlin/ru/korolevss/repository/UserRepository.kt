@@ -14,6 +14,7 @@ interface UserRepository {
     suspend fun addDislike(userId: Long): UserModel?
     suspend fun checkReadOnly(user: UserModel, postService: PostService)
     suspend fun checkStatus(user: UserModel)
+    suspend fun update(userId: Long, newPassword: String)
     suspend fun checkStatusAllUsers()
     suspend fun addPostId(user: UserModel, postId: Long)
     suspend fun listUsersLikeDislikePostById(post: PostModel): Map<UserModel, LikeDislikeModel>

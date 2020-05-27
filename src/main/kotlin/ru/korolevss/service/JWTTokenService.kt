@@ -13,6 +13,5 @@ class JWTTokenService {
 
     fun generate(model: UserModel): String = JWT.create()
             .withClaim("id", model.id)
-            .withClaim("password", model.password)
             .sign(algo)
 }

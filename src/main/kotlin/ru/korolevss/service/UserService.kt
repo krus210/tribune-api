@@ -64,9 +64,8 @@ class UserService(
         if (!passwordEncoder.matches(input.old, user.password)) {
             throw PasswordChangeException("Wrong password!")
         }
-        val copy = user.copy(password = passwordEncoder.encode(input.new))
-        repo.save(copy)
-        val token = tokenService.generate(copy)
+        repo.update(user.id, passwordEncoder.encode(input.new))
+        val token = tokenService.generate(user)
         return TokenDto(token)
     }
 
