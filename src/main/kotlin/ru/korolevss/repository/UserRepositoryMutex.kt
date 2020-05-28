@@ -163,6 +163,6 @@ class UserRepositoryMutex : UserRepository {
                 mapUsers[user] = LikeDislikeModel(it.value, LikeDislike.DISLIKE)
             }
         }
-        return mapUsers.toSortedMap(compareBy { mapUsers[it]!!.date })
+        return mapUsers.toSortedMap(compareByDescending { mapUsers[it]!!.date })
     }
 }
