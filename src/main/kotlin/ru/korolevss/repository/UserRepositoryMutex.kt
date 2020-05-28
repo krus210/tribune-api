@@ -85,17 +85,17 @@ class UserRepositoryMutex : UserRepository {
     }
 
     @KtorExperimentalAPI
-    override suspend fun checkReadOnly(user: UserModel, postService: PostService): Boolean {
-        val index = items.indexOfFirst { it.id == user.id }
-        user.userPostsId.forEach {
-            val postDto = postService.getPostById(it)
-            if (postDto.dislikeUsersId.size >= 5 && postDto.likeUsersId.isEmpty()) {         // > 100
+    override suspend fun checkReadOnly(userId: Long, postService: PostService): Boolean {
+        val index = items.indexOfFirst { it.id == userId }
+        items[index].userPostsId.forEach {
+            val post = postService.getPostById(it)
+            if (post.dislikeUsersId.size >= 5 && post.likeUsersId.isEmpty()) {         // > 100
                 if (!items[index].readOnly) {
                     mutex.withLock {
                         items[index].readOnly = true
                     }
                 }
-                return@forEach
+                return true
             } else {
                 if (items[index].readOnly) {
                     mutex.withLock {

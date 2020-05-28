@@ -12,7 +12,7 @@ data class UserResponseDto(
         val attachmentImage: String?,
         val status: UserStatus,
         val token: String?,
-        val readOnly: Boolean = false
+        val readOnly: Boolean
 ) {
     companion object {
         @KtorExperimentalAPI

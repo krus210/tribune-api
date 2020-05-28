@@ -13,7 +13,7 @@ interface UserRepository {
     suspend fun saveFirebaseToken(userId: Long, firebaseToken: String): UserModel?
     suspend fun addLike(userId: Long): UserModel?
     suspend fun addDislike(userId: Long): UserModel?
-    suspend fun checkReadOnly(user: UserModel, postService: PostService): Boolean
+    suspend fun checkReadOnly(userId: Long, postService: PostService): Boolean
     suspend fun checkStatus(user: UserModel): UserStatus
     suspend fun update(userId: Long, newPassword: String)
     suspend fun addPostId(user: UserModel, postId: Long)
