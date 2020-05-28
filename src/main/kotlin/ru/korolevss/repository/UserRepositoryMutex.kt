@@ -35,7 +35,7 @@ class UserRepositoryMutex : UserRepository {
     }
 
     override suspend fun update(userId: Long, newPassword: String) {
-        val index = items.indexOfFirst { it.id == userId}
+        val index = items.indexOfFirst { it.id == userId }
         mutex.withLock {
             items[index].password = newPassword
         }
@@ -113,13 +113,15 @@ class UserRepositoryMutex : UserRepository {
         val itemsCompareLikes = items.sortedWith(compareBy { it.likes }).reversed()
         val indexUserByDislikes = itemsCompareDislikes.indexOfFirst { it.id == user.id }
         val indexUserByLikes = itemsCompareLikes.indexOfFirst { it.id == user.id }
-        if (user.dislikes > 5 || user.dislikes > user.likes * 2 || ((indexUserByDislikes <= 4) && items.size >= 20)) {
+        if (user.dislikes > 5 || (user.dislikes > user.likes * 2 && user.likes != 0L)
+                || (user.dislikes > 2 && user.likes == 0L) || ((indexUserByDislikes <= 4) && items.size >= 20)) {
             if (user.status != UserStatus.HATER) {
                 mutex.withLock {
                     items[index].status = UserStatus.HATER
                 }
             }
-        } else if (user.likes > 5 || user.likes > user.dislikes * 2 || ((indexUserByLikes <= 4) && items.size >= 20)) {
+        } else if (user.likes > 5 || (user.likes > user.dislikes * 2 && user.dislikes != 0L)
+                || (user.likes > 2 && user.dislikes == 0L) || ((indexUserByLikes <= 4) && items.size >= 20)) {
             if (user.status != UserStatus.PROMOTER) {
                 mutex.withLock {
                     items[index].status = UserStatus.PROMOTER
@@ -150,14 +152,14 @@ class UserRepositoryMutex : UserRepository {
     }
 
     override suspend fun listUsersLikeDislikePostById(post: PostModel): Map<UserModel, LikeDislikeModel> {
-        val mapUsers= mutableMapOf<UserModel, LikeDislikeModel>()
-        post.likeUsersId.forEach{
+        val mapUsers = mutableMapOf<UserModel, LikeDislikeModel>()
+        post.likeUsersId.forEach {
             val user = getById(it.key)
             if (user != null) {
                 mapUsers[user] = LikeDislikeModel(it.value, LikeDislike.LIKE)
             }
         }
-        post.dislikeUsersId.forEach{
+        post.dislikeUsersId.forEach {
             val user = getById(it.key)
             if (user != null) {
                 mapUsers[user] = LikeDislikeModel(it.value, LikeDislike.DISLIKE)
