@@ -61,10 +61,10 @@ class PostService(private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun likeById(userId: Long, postId: Long, userService: UserService, fcmService: FCMService): PostResponseDto {
-        val post = repo.likeById(postId, userId) ?: throw NotFoundException()
-        if (post.likeUsersId.contains(userId)) {
+        if (getPostById(postId).likeUsersId.contains(userId)) {
             throw UserAccessException("You liked this post before")
         }
+        val post = repo.likeById(postId, userId) ?: throw NotFoundException()
         val userOfPost = userService.getById(post.userId)
         val user = userService.getById(userId)
         if (!userOfPost.token.isNullOrEmpty()) {
@@ -77,10 +77,10 @@ class PostService(private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun dislikeById(userId: Long, postId: Long, userService: UserService, fcmService: FCMService): PostResponseDto {
-        val post = repo.dislikeById(postId, userId) ?: throw NotFoundException()
-        if (post.dislikeUsersId.contains(userId)) {
+        if (getPostById(postId).dislikeUsersId.contains(userId)) {
             throw UserAccessException("You disliked this post before")
         }
+        val post = repo.dislikeById(postId, userId) ?: throw NotFoundException()
         val userOfPost = userService.getById(post.userId)
         val user = userService.getById(userId)
         if (!userOfPost.token.isNullOrEmpty()) {
