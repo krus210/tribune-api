@@ -151,20 +151,20 @@ class UserRepositoryMutex : UserRepository {
         }
     }
 
-    override suspend fun listUsersLikeDislikePostById(post: PostModel): Map<UserModel, LikeDislikeModel> {
-        val mapUsers = mutableMapOf<UserModel, LikeDislikeModel>()
+    override suspend fun listUsersLikeDislikePostById(post: PostModel): List<LikeDislikeModel> {
+        val listUsers = mutableListOf<LikeDislikeModel>()
         post.likeUsersId.forEach {
             val user = getById(it.key)
             if (user != null) {
-                mapUsers[user] = LikeDislikeModel(it.value, LikeDislike.LIKE)
+                listUsers.add(LikeDislikeModel(it.value, user, LikeDislike.LIKE))
             }
         }
         post.dislikeUsersId.forEach {
             val user = getById(it.key)
             if (user != null) {
-                mapUsers[user] = LikeDislikeModel(it.value, LikeDislike.DISLIKE)
+                listUsers.add(LikeDislikeModel(it.value, user, LikeDislike.DISLIKE))
             }
         }
-        return mapUsers.toSortedMap(compareByDescending { mapUsers[it]!!.date })
+        return listUsers.sortedWith(compareBy { it.date }).reversed()
     }
 }

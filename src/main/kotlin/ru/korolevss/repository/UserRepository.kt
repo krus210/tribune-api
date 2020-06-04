@@ -18,6 +18,6 @@ interface UserRepository {
     suspend fun update(userId: Long, newPassword: String)
     suspend fun addPostId(user: UserModel, postId: Long)
     suspend fun removePostId(user: UserModel, postId: Long)
-    suspend fun listUsersLikeDislikePostById(post: PostModel): Map<UserModel, LikeDislikeModel>
+    suspend fun listUsersLikeDislikePostById(post: PostModel): List<LikeDislikeModel>
     suspend fun getByIdPassword(id: Long, password: String): UserModel?
 }

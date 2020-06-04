@@ -104,13 +104,9 @@ class UserService(
     }
 
     @KtorExperimentalAPI
-    suspend fun listUsersLikeDislikePostById(postId: Long, postService: PostService): Map<UserResponseDto, LikeDislikeDto> {
-        val mapUsers = mutableMapOf<UserResponseDto, LikeDislikeDto>()
+    suspend fun listUsersLikeDislikePostById(postId: Long, postService: PostService): List<LikeDislikeDto>{
         val post = postService.getPostById(postId)
-        repo.listUsersLikeDislikePostById(post).forEach {
-            mapUsers[UserResponseDto.fromModel(it.key.id, this, postService)] = LikeDislikeDto.fromModel(it.value)
-        }
-        return mapUsers
+        return repo.listUsersLikeDislikePostById(post).map { LikeDislikeDto.fromModel(it, this) }
     }
 
 }
