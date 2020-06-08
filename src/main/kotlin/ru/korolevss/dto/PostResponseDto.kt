@@ -19,7 +19,8 @@ data class PostResponseDto(
         val likedByUser: Boolean,
         val dislikedByUser: Boolean,
         val isPostOfUser: Boolean,
-        val statusOfUser: UserStatus
+        val statusOfUser: UserStatus,
+        val attachmentImageUser: String?
 ) {
     companion object {
         @KtorExperimentalAPI
@@ -45,7 +46,8 @@ data class PostResponseDto(
                     likedByUser = likedByUser,
                     dislikedByUser = dislikedByUser,
                     isPostOfUser = isPostOfUser,
-                    statusOfUser = status
+                    statusOfUser = status,
+                    attachmentImageUser = user.attachmentImage
             )
         }
     }
