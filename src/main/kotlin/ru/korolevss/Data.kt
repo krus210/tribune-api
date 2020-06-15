@@ -6,13 +6,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 val users = mutableListOf(
-        UserModel(1, "user1", "123456", mutableListOf(25,23,21,19,17), "user1", likes = 9, dislikes = 0),
-        UserModel(2, "user2", "123456", mutableListOf(24,22,20,18,16), "user2", likes = 12, dislikes = 0),
-        UserModel(3, "user3", "123456", mutableListOf(15,13,11,9,7), "user3", likes = 7, dislikes = 0),
-        UserModel(4, "user4", "123456", mutableListOf(14,12,10,8,6), "user4", likes = 6, dislikes = 1),
-        UserModel(5, "user5", "123456", mutableListOf(5), "user5", likes = 9, dislikes = 4),
-        UserModel(6, "user6", "123456", mutableListOf(4), "user6", likes = 3, dislikes = 7),
-        UserModel(7, "user7", "123456", mutableListOf(3), "user7", likes = 3, dislikes = 8),
+        UserModel(1, "user1", "123456", mutableListOf(25,23,21,19,17), attachmentImage = "user1", likes = 9, dislikes = 0),
+        UserModel(2, "user2", "123456", mutableListOf(24,22,20,18,16), attachmentImage ="user2", likes = 12, dislikes = 0),
+        UserModel(3, "user3", "123456", mutableListOf(15,13,11,9,7), attachmentImage ="user3", likes = 7, dislikes = 0),
+        UserModel(4, "user4", "123456", mutableListOf(14,12,10,8,6), attachmentImage ="user4", likes = 6, dislikes = 1),
+        UserModel(5, "user5", "123456", mutableListOf(5), attachmentImage ="user5", likes = 9, dislikes = 4),
+        UserModel(6, "user6", "123456", mutableListOf(4), attachmentImage ="user6", likes = 3, dislikes = 7),
+        UserModel(7, "user7", "123456", mutableListOf(3), attachmentImage ="user7", likes = 3, dislikes = 8),
         UserModel(8, "user8", "123456", mutableListOf(2), likes = 1, dislikes = 9),
         UserModel(9, "user9", "123456", mutableListOf(1), likes = 1, dislikes = 8),
         UserModel(10, "user10", "123456", mutableListOf(), likes = 0, dislikes = 12),

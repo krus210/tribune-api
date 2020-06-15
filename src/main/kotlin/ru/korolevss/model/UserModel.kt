@@ -7,7 +7,7 @@ data class UserModel(
         val name: String,
         var password: String,
         var userPostsId: MutableList<Long> = mutableListOf(),
-        val attachmentImage: String? = null,
+        var attachmentImage: String? = null,
         var token: String? = null,
         var status: UserStatus = UserStatus.NORMAL,
         var readOnly: Boolean = false,
