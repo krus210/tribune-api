@@ -47,7 +47,7 @@ data class PostResponseDto(
                     dislikedByUser = dislikedByUser,
                     isPostOfUser = isPostOfUser,
                     statusOfUser = status,
-                    attachmentImageUser = user.attachmentImage
+                    attachmentImageUser = postUser.attachmentImage
             )
         }
     }
