@@ -1,9 +1,6 @@
 package ru.korolevss.repository
 
-import ru.korolevss.model.LikeDislikeModel
-import ru.korolevss.model.PostModel
-import ru.korolevss.model.UserModel
-import ru.korolevss.model.UserStatus
+import ru.korolevss.model.*
 import ru.korolevss.service.PostService
 
 interface UserRepository {
@@ -20,4 +17,6 @@ interface UserRepository {
     suspend fun removePostId(user: UserModel, postId: Long)
     suspend fun listUsersLikeDislikePostById(post: PostModel): List<LikeDislikeModel>
     suspend fun getByIdPassword(id: Long, password: String): UserModel?
+    suspend fun addImage(user: UserModel, mediaModel: MediaModel)
+
 }

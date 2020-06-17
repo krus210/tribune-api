@@ -167,4 +167,11 @@ class UserRepositoryMutex : UserRepository {
         }
         return listUsers.sortedWith(compareBy { it.date }).reversed()
     }
+
+    override suspend fun addImage(user: UserModel, mediaModel: MediaModel) {
+        val index = items.indexOfFirst { it.id == user.id }
+        mutex.withLock {
+            items[index].attachmentImage = mediaModel.id
+        }
+    }
 }

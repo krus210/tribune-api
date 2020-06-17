@@ -13,6 +13,7 @@ import io.ktor.routing.*
 import io.ktor.util.KtorExperimentalAPI
 import ru.korolevss.dto.*
 import ru.korolevss.me
+import ru.korolevss.model.MediaModel
 import ru.korolevss.service.FCMService
 import ru.korolevss.service.FileService
 import ru.korolevss.service.PostService
@@ -51,6 +52,11 @@ class RoutingV1(
                     route("/me") {
                         get {
                             call.respond(UserResponseDto.fromModel(me!!.id, userService, postService))
+                        }
+                        post("/image"){
+                            val input = call.receive<MediaModel>()
+                            userService.addImage(me!!.id, input)
+                            call.respond(HttpStatusCode.OK)
                         }
                         post("/change-password"){
                             val input = call.receive<PasswordChangeRequestDto>()

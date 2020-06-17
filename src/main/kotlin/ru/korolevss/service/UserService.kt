@@ -8,10 +8,7 @@ import ru.korolevss.exception.InvalidPasswordException
 import ru.korolevss.exception.NullUsernameOrPasswordException
 import ru.korolevss.exception.PasswordChangeException
 import ru.korolevss.exception.UserExistsException
-import ru.korolevss.model.LikeDislikeModel
-import ru.korolevss.model.PostModel
-import ru.korolevss.model.UserModel
-import ru.korolevss.model.UserStatus
+import ru.korolevss.model.*
 import ru.korolevss.repository.PostRepository
 import ru.korolevss.repository.UserRepository
 
@@ -47,6 +44,12 @@ class UserService(
             val token = tokenService.generate(user)
             return TokenDto(token)
         }
+    }
+
+    @KtorExperimentalAPI
+    suspend fun addImage(userId: Long, mediaModel: MediaModel) {
+        val user = repo.getById(userId) ?: throw NotFoundException()
+        repo.addImage(user, mediaModel)
     }
 
     @KtorExperimentalAPI
