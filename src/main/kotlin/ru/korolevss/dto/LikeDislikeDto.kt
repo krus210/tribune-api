@@ -4,7 +4,6 @@ import io.ktor.util.KtorExperimentalAPI
 import ru.korolevss.model.LikeDislike
 import ru.korolevss.model.LikeDislikeModel
 import ru.korolevss.model.UserStatus
-import ru.korolevss.repository.UserRepository
 import ru.korolevss.service.UserService
 import java.time.format.DateTimeFormatter
 
@@ -13,7 +12,8 @@ data class LikeDislikeDto(
         val userId: Long,
         val username: String,
         val status: UserStatus,
-        val likeDislike: LikeDislike
+        val likeDislike: LikeDislike,
+        val attachmentImage: String?
 ) {
     companion object {
         @KtorExperimentalAPI
@@ -27,7 +27,8 @@ data class LikeDislikeDto(
                     userId = model.user.id,
                     username = model.user.name,
                     status = userService.checkStatus(model.user.id),
-                    likeDislike = model.likeDislike
+                    likeDislike = model.likeDislike,
+                    attachmentImage = model.user.attachmentImage
             )
         }
     }
